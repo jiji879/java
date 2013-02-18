@@ -15,7 +15,7 @@ public class ResultSetProcessor
 
 	public static final int NESTED_PROCESSOR = 1;
 
-	public static BeanProcessor getProcessor(int processorType)
+	protected static BeanProcessor getProcessor(int processorType)
 	{
 		switch (processorType)
 		{

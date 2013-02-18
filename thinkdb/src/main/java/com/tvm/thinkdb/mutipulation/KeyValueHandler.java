@@ -24,17 +24,38 @@ public class KeyValueHandler<K, V> implements ResultSetHandler<Map<K, V>>
 
 	private String value;
 
+	/**
+	 * 创建一个默认的键-值转换器,采用指定sql中唯一的两个字段作为键值
+	 */
 	public KeyValueHandler()
 	{
 		this.NOT_SET_KV = true;
 	}
 
+	/**
+	 * 创建一个指定键-值得数据处理器
+	 * 
+	 * @param key
+	 *            数据库字段-键
+	 * @param value
+	 *            数据库字段-值
+	 */
 	public KeyValueHandler(String key, String value)
 	{
 		this.key = key;
 		this.value = value;
 	}
 
+	/**
+	 * 将数据库结果集转换为键值对
+	 * 
+	 * @param rs
+	 *            待转换结果集
+	 * @return 键值映射集合
+	 * @throws SQLException
+	 *             如果转换过程中遍历结果集发生异常或者转换类型不正确则抛出
+	 * @author 余洪禹
+	 */
 	public Map<K, V> handle(ResultSet rs) throws SQLException
 	{
 		if (this.NOT_SET_KV)

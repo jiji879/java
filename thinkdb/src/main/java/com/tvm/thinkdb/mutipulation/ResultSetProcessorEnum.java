@@ -9,8 +9,14 @@ package com.tvm.thinkdb.mutipulation;
 public class ResultSetProcessorEnum
 {
 
+	/**
+	 * 普通驼峰处理器
+	 */
 	public static final int HUMB_PROCESSOR = 0;
 
+	/**
+	 * 包含内嵌对象处理器
+	 */
 	public static final int NESTED_PROCESSOR = 1;
 
 }

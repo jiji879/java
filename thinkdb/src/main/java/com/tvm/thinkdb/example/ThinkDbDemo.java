@@ -1,5 +1,6 @@
 package com.tvm.thinkdb.example;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -8,12 +9,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.dbutils.BasicRowProcessor;
+import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 
+import com.tvm.thinkdb.bean.CrawlerUrl;
 import com.tvm.thinkdb.connection.ConnectionManager;
 import com.tvm.thinkdb.connection.DatabaseInfoListException;
+import com.tvm.thinkdb.mutipulation.HumbBeanListHandler;
 import com.tvm.thinkdb.mutipulation.JiJiQueryRunner;
 import com.tvm.thinkdb.mutipulation.KeyValueHandler;
 import com.tvm.thinkdb.mutipulation.NestedRowProcessor;
@@ -27,11 +31,12 @@ public class ThinkDbDemo
 	{
 		ConfigAccessor.init("config.properties", "utf-8");
 		ConnectionManager.init("EDITOR_APP", "EPG_APP", "AD_APP", "ERROR_DATA", "AD_MATRIX",
-				"MAINTAIN");
+				"MAINTAIN", "JIJI");
 
 		example1();
 		example2();
 		example3();
+		example4();
 	}
 
 	private static void example1() throws SQLException, ClassNotFoundException,
@@ -44,7 +49,7 @@ public class ThinkDbDemo
 		error.setSyncSql("error sql");
 		error.setTableName("table_name");
 		System.out.println(runner.insert(ConnectionManager.getMysqlConnection("ERROR_DATA"), sql,
-				ErrorData.class, error));
+				error));
 
 		QueryRunner query = new QueryRunner();
 		Map<Integer, String> errorDatas = query.query(
@@ -93,14 +98,38 @@ public class ThinkDbDemo
 
 	private static void example3() throws Exception
 	{
-		String sql = "select region_id ,mount_path from region_storage_info";
+		String sql = "select region_id ,storage_path from region_storage_info";
 		Map<Integer, String> map = new QueryRunner().query(
 				ConnectionManager.getMysqlConnection("MAINTAIN"), sql,
-				new KeyValueHandler<Integer, String>("region_id", "mount_path"));
+				new KeyValueHandler<Integer, String>("region_id", "storage_path"));
 		Set<Integer> keys = map.keySet();
 		for (int key : keys)
 		{
 			System.out.println(String.format("%s-%s", key, map.get(key)));
 		}
+	}
+
+	public static void example4()
+	{
+		List<CrawlerUrl> urls = null;
+		Connection conn = null;
+		String sql = "select name,url as base_url,ignore_depth,regex as filter_regex from filter_url u left join"
+				+ " url_regex r on r.id = u.url_regex_id";
+		QueryRunner quer = new QueryRunner();
+		try
+		{
+			conn = ConnectionManager.getMysqlConnection("JIJI");
+			urls = quer.query(conn, sql, new HumbBeanListHandler<CrawlerUrl>(CrawlerUrl.class));
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			DbUtils.closeQuietly(conn);
+		}
+
+		System.out.println(urls);
 	}
 }

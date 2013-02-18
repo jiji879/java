@@ -42,6 +42,16 @@ public final class ConfigAccessor
 		return validResult;
 	}
 
+	/**
+	 * 以指定路径和编码加载配置文件
+	 * 
+	 * @param configPath
+	 *            配置文件路径
+	 * @param encoding
+	 *            读取文件的编码
+	 * @return 如果加载成功则返回true,否则返回false
+	 * @author 余洪禹
+	 */
 	public static boolean init(String configPath, String encoding)
 	{
 		try
@@ -57,6 +67,12 @@ public final class ConfigAccessor
 		return validConfig();
 	}
 
+	/**
+	 * 校验全局配置文件是否已经加载
+	 * 
+	 * @return 如果已经被加载则返回true,否则返回false
+	 * @author 余洪禹
+	 */
 	public static boolean isLoaded()
 	{
 		return propUtil != null;
@@ -78,16 +94,40 @@ public final class ConfigAccessor
 		return type.cast(valueObj);
 	}
 
+	/**
+	 * 获取配置值的字符串形式
+	 * 
+	 * @param propName
+	 *            配置项
+	 * @return 对应的值
+	 * @author 余洪禹
+	 */
 	public static String getString(String propName)
 	{
 		return (String) getInternal(propName, String.class);
 	}
 
+	/**
+	 * 获取配置值的整数形式
+	 * 
+	 * @param propName
+	 *            配置项
+	 * @return 对应的值
+	 * @author 余洪禹
+	 */
 	public static int getInt(String propName)
 	{
 		return Integer.parseInt((String) getInternal(propName, String.class));
 	}
 
+	/**
+	 * 获取配置值的双精度形式
+	 * 
+	 * @param propName
+	 *            配置项
+	 * @return 对应的值
+	 * @author 余洪禹
+	 */
 	public static double getDouble(String propName)
 	{
 		return Double.parseDouble((String) getInternal(propName, String.class));

@@ -30,6 +30,14 @@ public class ColumnPropertySupporter
 		return humpName.toString();
 	}
 
+	/**
+	 * 获取数据库字段的getter方法名称
+	 * 
+	 * @param columnName
+	 *            数据库字段名称
+	 * @return 对应的getter名
+	 * @author 余洪禹
+	 */
 	public static String getGetterName(String columnName)
 	{
 		// 转换为驼峰

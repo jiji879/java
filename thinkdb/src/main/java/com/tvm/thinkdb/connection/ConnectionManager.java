@@ -34,7 +34,8 @@ public class ConnectionManager
 		DatabaseInfo dbInfo = dbList.get(prefix);
 		if (dbInfo == null)
 		{
-			throw new DatabaseInfoListException("数据库信息集合中没有" + prefix + "前缀的数据");
+			throw new DatabaseInfoListException("数据库信息集合中没有" + prefix
+					+ "前缀的数据,请使用ConnectionProvider.init(String... prefix)");
 		}
 
 		return dbInfo;
