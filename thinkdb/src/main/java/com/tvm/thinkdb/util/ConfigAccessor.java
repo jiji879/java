@@ -1,84 +1,101 @@
 package com.tvm.thinkdb.util;
 
-import com.tvm.util.PropertyUtil;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
-import org.apache.log4j.Logger;
 
 public final class ConfigAccessor
 {
 
-	private static Logger logger = Logger.getLogger(ConfigAccessor.class);
-
-	private static PropertyUtil propUtil;
+	private Properties props;
 
 	private static Map<String, Object> properties = new HashMap<String, Object>();
 
-	protected static boolean validConfig()
+	private ConfigAccessor(String configPath, String encoding) throws IOException
 	{
-		boolean validResult = true;
+		props = new Properties();
+		try
+		{
+			props.load(new InputStreamReader(new FileInputStream(configPath), encoding));
+		}
+		catch (UnsupportedEncodingException ex)
+		{
+			throw new IOException(
+					String.format("加载配置文件异常:%s,配置文件:%s", ex.getMessage(), configPath), ex);
+		}
+		catch (FileNotFoundException ex)
+		{
+			throw new IOException(
+					String.format("加载配置文件异常:%s,配置文件:%s", ex.getMessage(), configPath), ex);
+		}
+		catch (IOException ex)
+		{
+			throw new IOException(
+					String.format("加载配置文件异常:%s,配置文件:%s", ex.getMessage(), configPath), ex);
+		}
+	}
 
-		Set<Object> keys = propUtil.keys();
+	public static ConfigAccessor init(String configPath, String encoding) throws IOException
+	{
+		return init(configPath, encoding, true);
+	}
+
+	public static ConfigAccessor init(String configPath, String encoding, boolean ignoreEmpty)
+			throws IOException
+	{
+		ConfigAccessor conAccer = new ConfigAccessor(configPath, encoding);
+
+		try
+		{
+			conAccer.validConfig(ignoreEmpty);
+		}
+		catch (Exception ex)
+		{
+			throw new IOException(String.format("配置文件校验失败:%s", ex.getMessage()));
+		}
+		return conAccer;
+	}
+
+	protected void validConfig(boolean ignoreEmpty)
+	{
+		Set<Object> keys = props.keySet();
 		Iterator<Object> i = keys.iterator();
 		while (i.hasNext())
 		{
 			Object key = i.next();
 			try
 			{
-				Object obj = propUtil.getProperty(key.toString());
+				Object obj = props.getProperty(key.toString());
 				properties.put(key.toString(), obj);
 			}
 			catch (Exception ex)
 			{
-				logger.error("加载配置文件错误,配置项:" + key + "为空");
-				validResult = false;
-				break;
+				if (ignoreEmpty)
+				{
+					properties.put(key.toString(), "");
+				}
+				else
+				{
+					throw new IllegalArgumentException(String.format("配置项:%s为空", key.toString()));
+				}
 			}
 
 		}
-
-		return validResult;
 	}
 
-	/**
-	 * 以指定路径和编码加载配置文件
-	 * 
-	 * @param configPath
-	 *            配置文件路径
-	 * @param encoding
-	 *            读取文件的编码
-	 * @return 如果加载成功则返回true,否则返回false
-	 * @author 余洪禹
-	 */
-	public static boolean init(String configPath, String encoding)
+	public boolean isLoaded()
 	{
-		try
-		{
-			propUtil = new PropertyUtil(configPath, encoding);
-		}
-		catch (Exception ex)
-		{
-			logger.error("加载配置文件异常:" + ex.getMessage());
-			return false;
-		}
-
-		return validConfig();
+		return props != null;
 	}
 
-	/**
-	 * 校验全局配置文件是否已经加载
-	 * 
-	 * @return 如果已经被加载则返回true,否则返回false
-	 * @author 余洪禹
-	 */
-	public static boolean isLoaded()
-	{
-		return propUtil != null;
-	}
-
-	private static <T> T getInternal(String propName, Class<T> type)
+	private <T> T getInternal(String propName, Class<T> type)
 	{
 		if (!isLoaded())
 		{
@@ -94,41 +111,17 @@ public final class ConfigAccessor
 		return type.cast(valueObj);
 	}
 
-	/**
-	 * 获取配置值的字符串形式
-	 * 
-	 * @param propName
-	 *            配置项
-	 * @return 对应的值
-	 * @author 余洪禹
-	 */
-	public static String getString(String propName)
+	public String getString(String propName)
 	{
 		return (String) getInternal(propName, String.class);
 	}
 
-	/**
-	 * 获取配置值的整数形式
-	 * 
-	 * @param propName
-	 *            配置项
-	 * @return 对应的值
-	 * @author 余洪禹
-	 */
-	public static int getInt(String propName)
+	public int getInt(String propName)
 	{
 		return Integer.parseInt((String) getInternal(propName, String.class));
 	}
 
-	/**
-	 * 获取配置值的双精度形式
-	 * 
-	 * @param propName
-	 *            配置项
-	 * @return 对应的值
-	 * @author 余洪禹
-	 */
-	public static double getDouble(String propName)
+	public double getDouble(String propName)
 	{
 		return Double.parseDouble((String) getInternal(propName, String.class));
 	}

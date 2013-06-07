@@ -1,4 +1,4 @@
-package com.tvm.thinkdb.bean;
+package com.tvm.thinkdb.example;
 
 import java.util.regex.Pattern;
 

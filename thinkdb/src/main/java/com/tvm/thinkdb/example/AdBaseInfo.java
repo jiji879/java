@@ -9,8 +9,6 @@
  */
 package com.tvm.thinkdb.example;
 
-import com.tvm.thinkdb.bean.NeighborAd;
-import com.tvm.thinkdb.bean.NeighborProgram;
 
 /**
  * 广告基础信息实体类,记录了所有广告相关的基础信息

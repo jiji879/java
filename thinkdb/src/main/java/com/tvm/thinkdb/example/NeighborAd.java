@@ -1,41 +1,41 @@
 /*
- * 文件名：NeighborProgram.java
+ * 文件名：NeighborAd.java
  * 版权：  Copyright ©2012 Tvmining Corporation. All rights reserved. 
- * 描述：相邻节目实体类
+ * 描述：相邻广告实体类
  * 修改人：余洪禹
  * 修改时间：2012-12-10
  * 修改编号：0001
  * 修改内容：创建
  */
-package com.tvm.thinkdb.bean;
+package com.tvm.thinkdb.example;
 
 /**
- * 相邻节目实体类
+ * 相邻广告实体类
  * 
  * @author 余洪禹
- * @version 2012-12-10 下午4:22:40
+ * @version 2012-12-10 下午4:25:57
  */
-public class NeighborProgram
+public class NeighborAd
 {
 
 	/**
-	 * 节目名称
+	 * 广告名称
 	 */
-	private String programName;
+	private String adName;
 
 	/**
 	 * 相邻类型(0-前,1-后)
 	 */
 	private int type;
 
-	public String getProgramName()
+	public String getAdName()
 	{
-		return programName;
+		return adName;
 	}
 
-	public void setProgramName(String programName)
+	public void setAdName(String adName)
 	{
-		this.programName = programName;
+		this.adName = adName;
 	}
 
 	public int getType()
@@ -51,7 +51,7 @@ public class NeighborProgram
 	@Override
 	public String toString()
 	{
-		return "NeighborProgram [programName=" + programName + ", type=" + type + "]";
+		return "NeighborAd [adName=" + adName + ", type=" + type + "]";
 	}
 
 }

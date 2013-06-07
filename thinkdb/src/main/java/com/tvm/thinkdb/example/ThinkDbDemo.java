@@ -14,7 +14,6 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 
-import com.tvm.thinkdb.bean.CrawlerUrl;
 import com.tvm.thinkdb.connection.ConnectionManager;
 import com.tvm.thinkdb.connection.DatabaseInfoListException;
 import com.tvm.thinkdb.mutipulation.HumbBeanListHandler;
@@ -29,9 +28,9 @@ public class ThinkDbDemo
 
 	public static void main(String args[]) throws Exception
 	{
-		ConfigAccessor.init("config.properties", "utf-8");
-		ConnectionManager.init("EDITOR_APP", "EPG_APP", "AD_APP", "ERROR_DATA", "AD_MATRIX",
-				"MAINTAIN", "JIJI");
+		ConfigAccessor conAccer = ConfigAccessor.init("config.properties", "utf-8");
+		ConnectionManager.init(conAccer, "EDITOR_APP", "EPG_APP", "AD_APP", "ERROR_DATA",
+				"AD_MATRIX", "MAINTAIN", "JIJI");
 
 		example1();
 		example2();

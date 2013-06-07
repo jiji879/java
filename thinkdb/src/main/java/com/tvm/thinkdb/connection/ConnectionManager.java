@@ -13,8 +13,11 @@ public class ConnectionManager
 
 	private static DatabaseInfoList dbList;
 
-	public static void init(String... prefix)
+	private static ConfigAccessor conAccer;
+
+	public static synchronized void init(ConfigAccessor conAccer, String... prefix)
 	{
+		ConnectionManager.conAccer = conAccer;
 		if (dbList == null)
 		{
 			dbList = new DatabaseInfoList();
@@ -117,11 +120,11 @@ public class ConnectionManager
 			for (String prefix : prefixs)
 			{
 				DatabaseInfo dbInfo = new DatabaseInfo();
-				dbInfo.setIp(ConfigAccessor.getString(prefix + ".DB_IP"));
-				dbInfo.setDatabase(ConfigAccessor.getString(prefix + ".DB_NAME"));
-				dbInfo.setUserName(ConfigAccessor.getString(prefix + ".DB_USERNAME"));
-				dbInfo.setPassword(ConfigAccessor.getString(prefix + ".DB_PASSWORD"));
-				dbInfo.setPort(ConfigAccessor.getInt(prefix + ".DB_PORT"));
+				dbInfo.setIp(conAccer.getString(prefix + ".DB_IP"));
+				dbInfo.setDatabase(conAccer.getString(prefix + ".DB_NAME"));
+				dbInfo.setUserName(conAccer.getString(prefix + ".DB_USERNAME"));
+				dbInfo.setPassword(conAccer.getString(prefix + ".DB_PASSWORD"));
+				dbInfo.setPort(conAccer.getInt(prefix + ".DB_PORT"));
 
 				put(prefix, dbInfo);
 			}

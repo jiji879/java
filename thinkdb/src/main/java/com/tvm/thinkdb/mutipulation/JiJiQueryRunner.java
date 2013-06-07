@@ -127,7 +127,7 @@ public class JiJiQueryRunner extends QueryRunner
 			stat = conn.createStatement();
 			rs = stat.executeQuery(sql);
 
-			return this.processor.toBean(rs, clazz);
+			return rs.next() ? this.processor.toBean(rs, clazz) : null;
 		}
 		finally
 		{
