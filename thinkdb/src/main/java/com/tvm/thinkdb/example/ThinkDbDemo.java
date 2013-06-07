@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,10 +33,69 @@ public class ThinkDbDemo
 		ConnectionManager.init(conAccer, "EDITOR_APP", "EPG_APP", "AD_APP", "ERROR_DATA",
 				"AD_MATRIX", "MAINTAIN", "JIJI");
 
-		example1();
-		example2();
-		example3();
-		example4();
+		// example1();
+		// example2();
+		// example3();
+		// example4();
+		exampleInsert();
+	}
+
+	/**
+	 * 〈简单描述〉 〈功能详细描述〉
+	 * 
+	 * @author 余洪禹
+	 * @throws DatabaseInfoListException 
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 */
+	private static void exampleInsert() throws ClassNotFoundException, SQLException, DatabaseInfoListException
+	{
+		Connection conn = ConnectionManager.getMysqlConnection("JIJI");
+		JiJiQueryRunner runner = new JiJiQueryRunner();
+		String sql = "insert into group_by_table(duration, period) values(?,?)";
+		List<C1> l = new LinkedList<C1>();
+		C1 c = new C1(1, "1-1");
+		l.add(c);
+		l.add(new C1(2, "2-2"));
+		runner.insert(conn, sql, c);
+		
+		runner.batchInsert(conn, sql, l);
+		
+	}
+
+	public static class C1
+	{
+
+		private int duration;
+
+		private String period;
+
+		public C1(int duration, String period)
+		{
+			this.duration = duration;
+			this.period = period;
+		}
+
+		public int getDuration()
+		{
+			return duration;
+		}
+
+		public void setDuration(int duration)
+		{
+			this.duration = duration;
+		}
+
+		public String getPeriod()
+		{
+			return period;
+		}
+
+		public void setPeriod(String period)
+		{
+			this.period = period;
+		}
+
 	}
 
 	private static void example1() throws SQLException, ClassNotFoundException,
