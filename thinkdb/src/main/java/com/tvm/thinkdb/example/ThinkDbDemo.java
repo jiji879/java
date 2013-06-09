@@ -29,8 +29,9 @@ public class ThinkDbDemo
 
 	public static void main(String args[]) throws Exception
 	{
-		ConfigAccessor conAccer = ConfigAccessor.init("config.properties", "utf-8");
-		ConnectionManager.init(conAccer, "EDITOR_APP", "EPG_APP", "AD_APP", "ERROR_DATA",
+		ConfigAccessor.init("config.properties", "utf-8");
+		ConfigAccessor.init("config_1.properties", "utf-8", false);
+		ConnectionManager.init("EDITOR_APP", "EPG_APP", "AD_APP", "ERROR_DATA",
 				"AD_MATRIX", "MAINTAIN", "JIJI");
 
 		// example1();

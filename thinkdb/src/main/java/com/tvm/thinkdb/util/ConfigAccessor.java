@@ -14,13 +14,20 @@ import java.util.Set;
 public final class ConfigAccessor
 {
 
-	private Properties props;
+	private static Properties props;
 
 	private static Map<String, Object> properties = new HashMap<String, Object>();
 
-	private ConfigAccessor(String configPath, String encoding) throws IOException
+	public static void init(String configPath, String encoding) throws IOException
+	{
+		init(configPath, encoding, true);
+	}
+
+	public static void init(String configPath, String encoding, boolean ignoreEmpty)
+			throws IOException
 	{
 		props = new Properties();
+
 		try
 		{
 			props.load(new InputStreamReader(new FileInputStream(configPath), encoding));
@@ -40,30 +47,18 @@ public final class ConfigAccessor
 			throw new IOException(
 					String.format("加载配置文件异常:%s,配置文件:%s", ex.getMessage(), configPath), ex);
 		}
-	}
-
-	public static ConfigAccessor init(String configPath, String encoding) throws IOException
-	{
-		return init(configPath, encoding, true);
-	}
-
-	public static ConfigAccessor init(String configPath, String encoding, boolean ignoreEmpty)
-			throws IOException
-	{
-		ConfigAccessor conAccer = new ConfigAccessor(configPath, encoding);
 
 		try
 		{
-			conAccer.validConfig(ignoreEmpty);
+			validConfig(ignoreEmpty);
 		}
 		catch (Exception ex)
 		{
 			throw new IOException(String.format("配置文件校验失败:%s", ex.getMessage()));
 		}
-		return conAccer;
 	}
 
-	protected void validConfig(boolean ignoreEmpty)
+	protected static void validConfig(boolean ignoreEmpty)
 	{
 		Set<Object> keys = props.keySet();
 		Iterator<Object> i = keys.iterator();
@@ -73,6 +68,19 @@ public final class ConfigAccessor
 			try
 			{
 				Object obj = props.getProperty(key.toString());
+				String strObj = obj.toString();
+				if (strObj.length() == 0)
+				{
+					if (ignoreEmpty)
+					{
+						properties.put(key.toString(), "");
+					}
+					else
+					{
+						throw new IllegalArgumentException(
+								String.format("配置项:%s为空", key.toString()));
+					}
+				}
 				properties.put(key.toString(), obj);
 			}
 			catch (Exception ex)
@@ -90,12 +98,12 @@ public final class ConfigAccessor
 		}
 	}
 
-	public boolean isLoaded()
+	public static boolean isLoaded()
 	{
 		return props != null;
 	}
 
-	private <T> T getInternal(String propName, Class<T> type)
+	private static <T> T getInternal(String propName, Class<T> type)
 	{
 		if (!isLoaded())
 		{
@@ -111,17 +119,17 @@ public final class ConfigAccessor
 		return type.cast(valueObj);
 	}
 
-	public String getString(String propName)
+	public static String getString(String propName)
 	{
 		return (String) getInternal(propName, String.class);
 	}
 
-	public int getInt(String propName)
+	public static int getInt(String propName)
 	{
 		return Integer.parseInt((String) getInternal(propName, String.class));
 	}
 
-	public double getDouble(String propName)
+	public static double getDouble(String propName)
 	{
 		return Double.parseDouble((String) getInternal(propName, String.class));
 	}
